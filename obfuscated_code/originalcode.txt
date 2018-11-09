@@ -1,0 +1,20 @@
+function encrypt(a){
+var A = "nymphsblitzquIckvexdwarfjob"
+var b = A, n= 28, i=0, z=0;
+var c = "";
+while( i < a.length)
+{
+x = A.indexOf(a.charAt(i))
+y = A.indexOf(b.charAt(i%b.length))
+z = (x+y) % n;
+c = c + A.charAt(z);
+if (x+1 == n){
+b=c;
+}
+i=i+1
+}
+return c
+}
+
+
+aim find: tsdmueyuvrxIedqqfmdqweIyaaxtiyzrujqezxqdawgotw
