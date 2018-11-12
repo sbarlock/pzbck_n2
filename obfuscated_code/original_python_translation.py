@@ -24,7 +24,7 @@ def char_position(lookup_text, char_value):
 
 
 def encrypt_book(plain_text, secret_key):
-    """ TBW
+    """ Encrypt a string following the method described in the book.
 
         Args:
             plain_text (string): String containig the plain text to be encrypted
@@ -34,7 +34,6 @@ def encrypt_book(plain_text, secret_key):
             cipher_text (string): Encrypted plain text
     """
 
-    # secret_key = 'nymphsblitzquIckvexdwarfjog.'
     internal_key = secret_key
     n = 28
     i = 0
@@ -55,9 +54,26 @@ def encrypt_book(plain_text, secret_key):
 
 
 def crack_next_char(known_plain_text, cipher_text, secret_key):
-    vocabulary = np.unique(np.array(list('nymphsblitzquIckvexdwarfjog.')))
+    """ Crack the next char of a cipher text
+    Knowing the secret key and the first n char of the plain text, determine char n+1 of plain text
+
+        Args:
+            known_plain_text (string): String containig the plain text alredy known (char [0 to n])
+            cipher_text (string): String containing the full length cipher text
+            secret_key (string): String containing the secret key to encrypt with
+
+        Returns:
+            current_trial_plain_text (string): String containig the plain text with an aditionnal char ([0 to n+1])
+    """
+
+    # The plain text char can only belong to the secret_key,
+    # build a array containing all those possible chars.
+    vocabulary = np.unique(np.array(list(secret_key)))
+    # Cut cipher text to the length of known plain text plus one char to crack
     cipher_with_next_char = cipher_text[0:len(known_plain_text)+1]
 
+    # Iterate through possible plain text chars and stop when the encypted plain text
+    # is the same than the cipher text.
     for vocabulary_index in range(len(vocabulary)):
         current_trial_plain_text = known_plain_text + vocabulary[vocabulary_index]
         cracked_text = encrypt_book(current_trial_plain_text, secret_key)
@@ -66,9 +82,20 @@ def crack_next_char(known_plain_text, cipher_text, secret_key):
 
 
 def crack_full_sentence(cipher_text, secret_key):
+    """ Iteratively crack a cipher_text
+    The first char of the plain text is known due to the cipher properties. The crack_next_char
+    function is called iteratively, cracking one char at a time
+
+        Args:
+            cipher_text (string): String containing the full length cipher text
+            secret_key (string): String containing the secret key to encrypt with
+
+        Returns:
+            known_plain_text (string): String containig the recovered plain text
+    """
+
     known_plain_text = cipher_text[0]
     for i in range(len(cipher_text) - 1):
-        # print(known_plain_text)
         known_plain_text = crack_next_char(known_plain_text, cipher_text, secret_key)
     return known_plain_text
 
